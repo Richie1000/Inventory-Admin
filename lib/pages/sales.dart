@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../providers/db.dart';
 import '../models/shop.dart';
@@ -14,9 +16,9 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
-  String selecteddate;
+  late String selecteddate;
 
-  double monthsales;
+  late double monthsales;
 
   @override
   void initState() {
@@ -75,7 +77,7 @@ class _SalesPageState extends State<SalesPage> {
                           _getSales(selecteddate, widget.shop);
                         });
                       }
-                    },
+                    } as FutureOr Function(DateTime? value),
                   );
                 },
               ),
@@ -156,13 +158,13 @@ class _SalesPageState extends State<SalesPage> {
                                     tooltip:
                                         "This is the product's Selling Price"),
                               ],
-                              rows: snapshot.data
+                              rows: snapshot.data!
                                   .map(
                                     (Sale sale) => DataRow(
                                       cells: [
                                         DataCell(
                                           Text(
-                                            sale.product.name,
+                                            sale.product!.name,
                                           ),
                                         ),
                                         DataCell(
@@ -172,7 +174,7 @@ class _SalesPageState extends State<SalesPage> {
                                         ),
                                         DataCell(
                                           Text(
-                                            sale.product.sellingPrice
+                                            sale.product!.sellingPrice
                                                 .toString(),
                                           ),
                                         ),
@@ -202,7 +204,7 @@ class _SalesPageState extends State<SalesPage> {
     var shopsales = await dbService.getShopMonthSales(widget.shop);
     shopsales.forEach((sale) {
       setState(() {
-        monthsales += sale.product.sellingPrice - sale.product.buyingPrice;
+        monthsales += sale.product!.sellingPrice - sale.product!.buyingPrice;
       });
     });
   }

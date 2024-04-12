@@ -1,4 +1,5 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/db.dart';
@@ -10,8 +11,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  double monthsales;
-  double monthwaste;
+  late double monthsales;
+  late double monthwaste;
   Map<String, dynamic> user = {};
 
   @override
@@ -23,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
     dbService.monthsales.listen((sales) {
       sales.forEach((sale) {
         setState(() {
-          monthsales += sale.product.sellingPrice - sale.product.buyingPrice;
+          monthsales += sale.product!.sellingPrice - sale.product!.buyingPrice;
         });
       });
     });
@@ -31,12 +32,25 @@ class _ProfilePageState extends State<ProfilePage> {
       waste.forEach((wasted) {
         setState(() {
           monthwaste +=
-              wasted.product.sellingPrice - wasted.product.buyingPrice;
+              wasted.product!.sellingPrice - wasted.product!.buyingPrice;
         });
       });
     });
 
     super.initState();
+  }
+
+  void showToast(String message) {
+    HapticFeedback.vibrate();
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   @override
@@ -65,20 +79,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.pushReplacementNamed(context, "/login");
                           }).catchError((error) {
                             if (error.toString().contains("NOINTERNET")) {
-                              Flushbar(
-                                title: "Hey There",
-                                message:
-                                    "You don't seem to have an active internet connection",
-                                duration: Duration(seconds: 4),
-                              )..show(context);
+                              showToast("You dont have an internet connection");
                             } else {
                               print(error);
-                              Flushbar(
-                                title: "Hey There",
-                                message:
-                                    "There seems to be a problem. Please try again later.",
-                                duration: Duration(seconds: 4),
-                              )..show(context);
+                              showToast("Something is wrong");
                             }
                           });
                         },

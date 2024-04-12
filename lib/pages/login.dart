@@ -1,4 +1,5 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/auth.dart';
@@ -21,11 +22,11 @@ class LoginPage extends StatelessWidget {
             // Add one stop for each color. Stops should increase from 0 to 1
             stops: [0.1, 0.5, 0.7, 0.9],
             colors: [
-              // Colors are easy thanks to Flutter's Colors class.
-              Colors.indigo[50],
-              Colors.indigo[100],
-              Colors.indigo[200],
-              Colors.indigo[100],
+              // Colors are easy thanks to Flutter's Colors class
+              Colors.indigo[50]!,
+              Colors.indigo[100]!,
+              Colors.indigo[200]!,
+              Colors.indigo[100]!,
             ],
           ),
         ),
@@ -50,6 +51,19 @@ class _LoginFormState extends State<LoginForm> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      //backgroundColor: Colors.white,
+      //textColor: Colors.black,
+      fontSize: 16.0,
+    );
+    HapticFeedback.lightImpact();
   }
 
   @override
@@ -101,7 +115,7 @@ class _LoginFormState extends State<LoginForm> {
                   fontStyle: FontStyle.italic,
                 ),
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'Please add email';
                   }
                 },
@@ -167,7 +181,7 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: _loading
                       ? null
                       : () {
-                          if (_loginFormKey.currentState.validate()) {
+                          if (_loginFormKey.currentState!.validate()) {
                             setState(() {
                               _loading = true;
                             });
@@ -179,7 +193,7 @@ class _LoginFormState extends State<LoginForm> {
                               setState(() {
                                 _loading = false;
                               });
-                              if (user.isEmailVerified) {
+                              if (user != null && user.emailVerified) {
                                 Navigator.pushReplacementNamed(
                                     context, "/home");
                               } else {
@@ -190,43 +204,24 @@ class _LoginFormState extends State<LoginForm> {
                                 _loading = false;
                               });
                               if (error.toString().contains("NOINTERNET")) {
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "You don't seem to have an active internet connection",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "You don't seem to have an active internet connection");
                               } else if (error
                                   .toString()
                                   .contains("NOTREGISTERED")) {
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "You don't seem to be registered as an Admin",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "You don't seem to be registered as an Admin");
                               } else if (error.code
                                   .contains("ERROR_WRONG_PASSWORD")) {
-                                Flushbar(
-                                  title: "Hey There",
-                                  message: "You entered the wrong password.",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast("You entered the wrong password.");
                               } else {
                                 print(error);
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "There seems to be a problem. Please try again later.",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "There seems to be a problem. Please try again later.");
                               }
                             });
                           } else {
-                            Flushbar(
-                              message: "Please input valid data",
-                              duration: Duration(seconds: 4),
-                            )..show(context);
+                            showToast("Please input valid data");
                           }
                         },
                 ),

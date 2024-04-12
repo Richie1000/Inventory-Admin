@@ -1,5 +1,6 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/db.dart';
 import '../widgets/bottom_sheet.dart';
@@ -11,7 +12,7 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  List<Product> _selectedProducts;
+  late List<Product> _selectedProducts;
 
   final _nameController = TextEditingController();
   final _uom = TextEditingController();
@@ -31,6 +32,19 @@ class _ProductsPageState extends State<ProductsPage> {
     _sPrice.dispose();
     _bPrice.dispose();
     super.dispose();
+  }
+
+  void showToast(String message) {
+    HapticFeedback.lightImpact();
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   @override
@@ -97,20 +111,12 @@ class _ProductsPageState extends State<ProductsPage> {
                       });
                     }).catchError((error) {
                       if (error.toString().contains("NOINTERNET")) {
-                        Flushbar(
-                          title: "Hey There",
-                          message:
-                              "You don't seem to have an active internet connection",
-                          duration: Duration(seconds: 4),
-                        )..show(context);
+                        showToast(
+                            "You don't seem to have an active internet connection");
                       } else {
                         print(error);
-                        Flushbar(
-                          title: "Hey There",
-                          message:
-                              "There seems to be a problem. Please try again later.",
-                          duration: Duration(seconds: 4),
-                        )..show(context);
+                        showToast(
+                            "There seems to be a problem. Please try again later.");
                       }
                     });
                   },
@@ -192,13 +198,13 @@ class _ProductsPageState extends State<ProductsPage> {
                                       numeric: true,
                                       tooltip: "This is the Profit margin"),
                                 ],
-                                rows: snapshot.data
+                                rows: snapshot.data!
                                     .map(
                                       (Product product) => DataRow(
                                         selected:
                                             _selectedProducts.contains(product),
                                         onSelectChanged: (selected) {
-                                          _onSelectedRow(selected, product);
+                                          _onSelectedRow(selected!, product);
                                         },
                                         cells: [
                                           DataCell(
@@ -208,7 +214,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                           ),
                                           DataCell(
                                             Text(
-                                              product.uom,
+                                              product.uom!,
                                             ),
                                           ),
                                           DataCell(
@@ -257,7 +263,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
   void _editProduct(BuildContext context, Product product) {
     _nameController.text = product.name;
-    _uom.text = product.uom;
+    _uom.text = product.uom!;
     _sPrice.text = product.sellingPrice.toString();
     _bPrice.text = product.buyingPrice.toString();
     showModalBottomSheetApp(
@@ -427,20 +433,11 @@ class _ProductsPageState extends State<ProductsPage> {
                                   _bPrice.clear();
                                 }).catchError((error) {
                                   if (error.toString().contains("NOINTERNET")) {
-                                    Flushbar(
-                                      title: "Hey There",
-                                      message:
-                                          "You don't seem to have an active internet connection",
-                                      duration: Duration(seconds: 4),
-                                    )..show(context);
+                                    showToast(
+                                        "You dont have Internet Connection");
                                   } else {
                                     print(error);
-                                    Flushbar(
-                                      title: "Hey There",
-                                      message:
-                                          "There seems to be a problem. Please try again later.",
-                                      duration: Duration(seconds: 4),
-                                    )..show(context);
+                                    showToast("Sorry, Something occured");
                                   }
                                 });
                               }
@@ -628,20 +625,12 @@ class _ProductsPageState extends State<ProductsPage> {
                                     if (error
                                         .toString()
                                         .contains("NOINTERNET")) {
-                                      Flushbar(
-                                        title: "Hey There",
-                                        message:
-                                            "You don't seem to have an active internet connection",
-                                        duration: Duration(seconds: 4),
-                                      )..show(context);
+                                      showToast(
+                                          "There seems to be a problem. Please try again later.");
                                     } else {
                                       print(error);
-                                      Flushbar(
-                                        title: "Hey There",
-                                        message:
-                                            "There seems to be a problem. Please try again later.",
-                                        duration: Duration(seconds: 4),
-                                      )..show(context);
+                                      showToast(
+                                          "There seems to be a problem. Please try again later.");
                                     }
                                   });
                                 }

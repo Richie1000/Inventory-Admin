@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/waste.dart';
@@ -14,9 +16,9 @@ class WastePage extends StatefulWidget {
 }
 
 class _WastePageState extends State<WastePage> {
-  String selecteddate;
+  late String selecteddate;
 
-  double monthwaste;
+  late double monthwaste;
   @override
   void initState() {
     monthwaste = 0;
@@ -74,7 +76,7 @@ class _WastePageState extends State<WastePage> {
                           _getWaste(selecteddate, widget.shop);
                         });
                       }
-                    },
+                    } as FutureOr Function(DateTime? value),
                   );
                 },
               ),
@@ -155,13 +157,13 @@ class _WastePageState extends State<WastePage> {
                                     tooltip:
                                         "This is the product's Selling Price"),
                               ],
-                              rows: snapshot.data
+                              rows: snapshot.data!
                                   .map(
                                     (Waste waste) => DataRow(
                                       cells: [
                                         DataCell(
                                           Text(
-                                            waste.product.name,
+                                            waste.product!.name,
                                           ),
                                         ),
                                         DataCell(
@@ -171,7 +173,7 @@ class _WastePageState extends State<WastePage> {
                                         ),
                                         DataCell(
                                           Text(
-                                            waste.product.sellingPrice
+                                            waste.product!.sellingPrice
                                                 .toString(),
                                           ),
                                         ),
@@ -201,7 +203,7 @@ class _WastePageState extends State<WastePage> {
     var shopwaste = await dbService.getShopMonthWaste(widget.shop);
     shopwaste.forEach((waste) {
       setState(() {
-        monthwaste += waste.product.sellingPrice - waste.product.buyingPrice;
+        monthwaste += waste.product!.sellingPrice - waste.product!.buyingPrice;
       });
     });
   }

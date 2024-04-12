@@ -645,14 +645,16 @@ class _ShopsAlertDialogState extends State<ShopsAlertDialog> {
           itemBuilder: (BuildContext context, int index) => CheckboxListTile(
             title: Text(shops[index].shop ?? 'Default Value'),
             value: selectedShops.contains(shops[index]),
-            onChanged: (bool selected) {
-              if (selected) {
+            onChanged: (bool? selected) {
+              // Update parameter type to bool?
+              if (selected != null) {
+                // Check if selected is not null
                 setState(() {
-                  selectedShops.add(shops[index]);
-                });
-              } else {
-                setState(() {
-                  selectedShops.remove(shops[index]);
+                  if (selected) {
+                    selectedShops.add(shops[index]);
+                  } else {
+                    selectedShops.remove(shops[index]);
+                  }
                 });
               }
             },
@@ -705,9 +707,9 @@ class _EmployeeActiveStatusState extends State<EmployeeActiveStatus> {
         ),
         DropdownButton<bool>(
           value: activeDropdownValue,
-          onChanged: (bool newValue) {
+          onChanged: (bool? newValue) {
             setState(() {
-              activeDropdownValue = newValue;
+              activeDropdownValue = newValue!;
             });
           },
           items: <bool>[true, false].map<DropdownMenuItem<bool>>((bool value) {

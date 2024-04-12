@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import '../providers/auth.dart';
 
@@ -9,6 +10,19 @@ class VerifyPage extends StatefulWidget {
 }
 
 class _VerifyPageState extends State<VerifyPage> {
+  void showToast(String message) {
+    HapticFeedback.vibrate();
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,20 +36,12 @@ class _VerifyPageState extends State<VerifyPage> {
                 Navigator.pushReplacementNamed(context, "/login");
               }).catchError((error) {
                 if (error.toString().contains("NOINTERNET")) {
-                  Flushbar(
-                    title: "Hey There",
-                    message:
-                        "You don't seem to have an active internet connection",
-                    duration: Duration(seconds: 4),
-                  )..show(context);
+                  showToast(
+                      "You don't seem to have an active internet connection");
                 } else {
                   print(error);
-                  Flushbar(
-                    title: "Hey There",
-                    message:
-                        "There seems to be a problem. Please try again later.",
-                    duration: Duration(seconds: 4),
-                  )..show(context);
+                  showToast(
+                      "There seems to be a problem. Please try again later.");
                 }
               });
             },
@@ -71,13 +77,10 @@ class _VerifyPageState extends State<VerifyPage> {
               child: TextButton(
                 child: Text("Did not receive a verification email?"),
                 onPressed: () async {
-                  FirebaseUser user = await authService.auth.currentUser();
-                  user.sendEmailVerification().then((_) {
-                    Flushbar(
-                      title: "Hey There",
-                      message: "We have sent you a verification email",
-                      duration: Duration(seconds: 5),
-                    )..show(context);
+                  User? user = authService.auth.currentUser;
+
+                  user!.sendEmailVerification().then((_) {
+                    showToast("We have sent you a verification email");
                   });
                 },
               ),
@@ -94,10 +97,10 @@ class _VerifyPageState extends State<VerifyPage> {
             stops: [0.1, 0.5, 0.7, 0.9],
             colors: [
               // Colors are easy thanks to Flutter's Colors class.
-              Colors.indigo[50],
-              Colors.indigo[100],
-              Colors.indigo[200],
-              Colors.indigo[100],
+              Colors.indigo[50]!,
+              Colors.indigo[100]!,
+              Colors.indigo[200]!,
+              Colors.indigo[100]!,
             ],
           ),
         ),

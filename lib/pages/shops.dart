@@ -1,4 +1,5 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/shop.dart';
@@ -18,6 +19,19 @@ class _ShopsPageState extends State<ShopsPage> {
   void dispose() {
     _shopController.dispose();
     super.dispose();
+  }
+
+  void showToast(String message) {
+    HapticFeedback.vibrate();
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   @override
@@ -98,37 +112,27 @@ class _ShopsPageState extends State<ShopsPage> {
                       );
                     default:
                       return ListView.builder(
-                        itemCount: snapshot.data.length,
+                        itemCount: snapshot.data!.length,
                         itemBuilder: (BuildContext bc, index) => Card(
                           child: ListTile(
                             leading: Text((index + 1).toString()),
                             title: Text(
-                              snapshot.data[index].shop,
-                            ),
+                                snapshot.data![index].shop ?? "Default Value"),
                             trailing: IconButton(
                               icon: Icon(Icons.delete),
                               onPressed: () {
                                 dbService
                                     .deleteShop(
-                                      snapshot.data[index].shopid,
-                                    )
+                                        snapshot.data![index].shopid ?? "")
                                     .then((_) {})
                                     .catchError((error) {
                                   if (error.toString().contains("NOINTERNET")) {
-                                    Flushbar(
-                                      title: "Hey There",
-                                      message:
-                                          "You don't seem to have an active internet connection",
-                                      duration: Duration(seconds: 4),
-                                    )..show(context);
+                                    showToast(
+                                        "You don't seem to have an active internet connection");
                                   } else {
                                     print(error);
-                                    Flushbar(
-                                      title: "Hey There",
-                                      message:
-                                          "There seems to be a problem. Please try again later.",
-                                      duration: Duration(seconds: 4),
-                                    )..show(context);
+                                    showToast(
+                                        "There seems to be a problem Please try again");
                                   }
                                 });
                               },
@@ -138,7 +142,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      StockPage(snapshot.data[index]),
+                                      StockPage(snapshot.data![index]),
                                 ),
                               );
                             },
@@ -233,20 +237,12 @@ class _ShopsPageState extends State<ShopsPage> {
                                     if (error
                                         .toString()
                                         .contains("NOINTERNET")) {
-                                      Flushbar(
-                                        title: "Hey There",
-                                        message:
-                                            "You don't seem to have an active internet connection",
-                                        duration: Duration(seconds: 4),
-                                      )..show(context);
+                                      showToast(
+                                          "There seems to be a problem. Please try again later.");
                                     } else {
                                       print(error);
-                                      Flushbar(
-                                        title: "Hey There",
-                                        message:
-                                            "There seems to be a problem. Please try again later.",
-                                        duration: Duration(seconds: 4),
-                                      )..show(context);
+                                      showToast(
+                                          "There seems to be a problem. Please try again later.");
                                     }
                                   });
                                 }

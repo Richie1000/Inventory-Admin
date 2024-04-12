@@ -1,4 +1,5 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
+import "package:fluttertoast/fluttertoast.dart";
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/auth.dart';
@@ -22,16 +23,29 @@ class RegisterPage extends StatelessWidget {
             stops: [0.1, 0.5, 0.7, 0.9],
             colors: [
               // Colors are easy thanks to Flutter's Colors class.
-              Colors.indigo[50],
-              Colors.indigo[100],
-              Colors.indigo[200],
-              Colors.indigo[100],
+              Colors.indigo[50]!,
+              Colors.indigo[100]!,
+              Colors.indigo[200]!,
+              Colors.indigo[100]!,
             ],
           ),
         ),
       ),
     );
   }
+}
+
+void showToast(String message) {
+  HapticFeedback.vibrate();
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIosWeb: 1,
+    backgroundColor: Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
 }
 
 class RegisterForm extends StatefulWidget {
@@ -102,7 +116,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   fontStyle: FontStyle.italic,
                 ),
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'Please add username';
                   }
                 },
@@ -133,7 +147,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   fontStyle: FontStyle.italic,
                 ),
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'Please add email';
                   }
                 },
@@ -160,7 +174,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   floatingLabelBehavior: FloatingLabelBehavior.auto,
                 ),
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'Please add password';
                   } else if (value.length < 6) {
                     return 'Password should be more than 6 characters';
@@ -206,7 +220,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   onPressed: _loading
                       ? null
                       : () {
-                          if (_registerFormKey.currentState.validate()) {
+                          if (_registerFormKey.currentState!.validate()) {
                             setState(() {
                               _loading = true;
                             });
@@ -240,43 +254,24 @@ class _RegisterFormState extends State<RegisterForm> {
                                 _loading = false;
                               });
                               if (error.toString().contains("NOINTERNET")) {
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "You don't seem to have an active internet connection",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "You dont seem to have Internet Connection");
                               } else if (error.message
                                   .contains("ERROR_EMAIL_ALREADY_IN_USE")) {
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "This email has already been registered to another account",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "This email has already been registered to another account");
                               } else if (error.message
                                   .contains("ERROR_WEAK_PASSWORD")) {
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "Please use a stronger password. Preferably at least 6 characters",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "Please use a stronger password. Preferably at least 6 characters");
                               } else {
                                 print(error);
-                                Flushbar(
-                                  title: "Hey There",
-                                  message:
-                                      "There seems to be a problem. Please try again later.",
-                                  duration: Duration(seconds: 4),
-                                )..show(context);
+                                showToast(
+                                    "There seems to be a problem. Please try again later.");
                               }
                             });
                           } else {
-                            Flushbar(
-                              message: "Please input valid data",
-                              duration: Duration(seconds: 4),
-                            )..show(context);
+                            showToast("Please input valid data");
                           }
                         },
                 ),

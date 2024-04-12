@@ -18,8 +18,8 @@ class _TabsPageState extends State<TabsPage>
     EmployeesPage(),
     ProfilePage(),
   ];
-  TabController _tabController;
-  int _currentIndex;
+  late TabController _tabController;
+  late int _currentIndex;
 
   @override
   void initState() {
@@ -47,11 +47,11 @@ class _TabsPageState extends State<TabsPage>
         bottomNavigationBar: BubbleBottomBar(
           opacity: .2,
           currentIndex: _currentIndex,
-          onTap: (int index) {
+          onTap: (int? index) {
             setState(() {
-              _currentIndex = index;
+              _currentIndex = index!;
             });
-            _tabController.animateTo(index,
+            _tabController.animateTo(index!,
                 duration: Duration(milliseconds: 300), curve: Curves.ease);
           },
           elevation: 8,

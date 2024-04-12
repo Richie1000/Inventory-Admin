@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../providers/auth.dart';
 import 'package:shimmer/shimmer.dart';
@@ -11,17 +12,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     if (mounted) {
-      authService.auth.onAuthStateChanged.listen((user) {
+      authService.auth.authStateChanges().listen((user) {
         if (user != null) {
-          if (user.isEmailVerified) {
+          if (user.emailVerified) {
             Navigator.pushReplacementNamed(context, '/home');
           } else {
             user.reload().then((_) async {
-              user = await authService.auth.currentUser();
-              if (user.isEmailVerified) {
-                Navigator.pushReplacementNamed(context, '/home');
-              } else {
-                Navigator.pushReplacementNamed(context, '/verify');
+              if (authService.auth.currentUser != null) {
+                User? currentUser =
+                    authService.auth.currentUser; // Access currentUser directly
+                if (currentUser!.emailVerified) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                } else {
+                  Navigator.pushReplacementNamed(context, '/verify');
+                }
               }
             });
           }

@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
       },
       theme: ThemeData(
         primaryColor: Colors.blueAccent,
-        accentColor: Colors.pinkAccent,
+        hintColor: Colors.pinkAccent,
       ),
     );
   }

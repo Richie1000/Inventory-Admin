@@ -45,15 +45,15 @@ class _StockPageState extends State<StockPage> {
                     );
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: "sales",
-                    child: Text('View Sales'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: "waste",
-                    child: Text('View Waste'),
-                  ),
-                ],
+              const PopupMenuItem<String>(
+                value: "sales",
+                child: Text('View Sales'),
+              ),
+              const PopupMenuItem<String>(
+                value: "waste",
+                child: Text('View Waste'),
+              ),
+            ],
           ),
         ],
       ),
@@ -128,33 +128,33 @@ class _StockPageState extends State<StockPage> {
                                       tooltip:
                                           "This is the products's Buying Price"),
                                 ],
-                                rows: snapshot.data
+                                rows: snapshot.data!
                                     .map(
                                       (Stock stock) => DataRow(
-                                            cells: [
-                                              DataCell(
-                                                Text(
-                                                  stock.product.name,
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Text(
-                                                  stock.quantity.toString(),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Text(
-                                                  stock.product.uom,
-                                                ),
-                                              ),
-                                              DataCell(
-                                                Text(stock.dateadded
-                                                    .toString()
-                                                    .replaceAll(
-                                                        '00:00:00.000', '')),
-                                              ),
-                                            ],
+                                        cells: [
+                                          DataCell(
+                                            Text(
+                                              stock.product.name,
+                                            ),
                                           ),
+                                          DataCell(
+                                            Text(
+                                              stock.quantity.toString(),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              stock.product.uom!,
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(stock.dateadded
+                                                .toString()
+                                                .replaceAll(
+                                                    '00:00:00.000', '')),
+                                          ),
+                                        ],
+                                      ),
                                     )
                                     .toList(),
                               );
