@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ofm_admin/widgets/custom_bottom_modal_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/db.dart';
 import '../widgets/bottom_sheet.dart';
@@ -58,7 +59,7 @@ class _ProductsPageState extends State<ProductsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         verticalDirection: VerticalDirection.down,
         children: <Widget>[
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               ElevatedButton.icon(
@@ -391,7 +392,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         Icons.add_circle,
                         color: Theme.of(context).primaryColor,
                       ),
-                      ButtonBar(
+                      OverflowBar(
                         children: <Widget>[
                           TextButton(
                             child: Text("Cancel"),
@@ -457,194 +458,194 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   void _addProduct(BuildContext context) {
-    showModalBottomSheetApp(
+    showModalBottomSheet(
         context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            color: Color(0xFF737373),
-            child: Container(
-              decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0),
+        builder: (context) => CustomModalBottomSheet(
+                child: Container(
+              color: Color(0xFF737373),
+              child: Container(
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.only(
+                    topLeft: const Radius.circular(10.0),
+                    topRight: const Radius.circular(10.0),
+                  ),
                 ),
-              ),
-              child: Wrap(
-                children: <Widget>[
-                  Flex(
-                    direction: Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Container(
-                        width: (MediaQuery.of(context).size.width) * 0.5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 16.0,
-                          ),
-                          child: TextField(
-                            controller: _nameController,
-                            autofocus: true,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              hintText: "Product Name",
-                              hintStyle: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: (MediaQuery.of(context).size.width) * 0.5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 16.0,
-                          ),
-                          child: TextField(
-                            controller: _uom,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              hintText: "UOM",
-                              hintStyle: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Flex(
-                    direction: Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Container(
-                        width: (MediaQuery.of(context).size.width) * 0.5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 8.0,
-                          ),
-                          child: TextField(
-                            controller: _bPrice,
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            decoration: InputDecoration(
-                              hintText: "Buying Price",
-                              hintStyle: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: (MediaQuery.of(context).size.width) * 0.5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 8.0,
-                          ),
-                          child: TextField(
-                            controller: _sPrice,
-                            keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
-                            decoration: InputDecoration(
-                              hintText: "Selling Price",
-                              hintStyle: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8.0,
-                      bottom: 8.0,
-                      left: 16.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Wrap(
+                  children: <Widget>[
+                    Flex(
+                      direction: Axis.horizontal,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        Icon(
-                          Icons.add_circle,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        ButtonBar(
-                          children: <Widget>[
-                            TextButton(
-                              child: Text("Cancel"),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _nameController.clear();
-                                _uom.clear();
-                                _sPrice.clear();
-                                _bPrice.clear();
-                              },
+                        Container(
+                          width: (MediaQuery.of(context).size.width) * 0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0,
+                              horizontal: 16.0,
                             ),
-                            TextButton(
-                              child: Text(
-                                "Save",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
+                            child: TextField(
+                              controller: _nameController,
+                              autofocus: true,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                hintText: "Product Name",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black54,
                                 ),
                               ),
-                              onPressed: () {
-                                if (_nameController.text.isNotEmpty &&
-                                    _sPrice.text.isNotEmpty &&
-                                    _bPrice.text.isNotEmpty &&
-                                    _uom.text.isNotEmpty) {
-                                  dbService
-                                      .addProduct(
-                                    Product(
-                                      name: _nameController.text,
-                                      uom: _uom.text,
-                                      sellingPrice: double.parse(_sPrice.text),
-                                      buyingPrice: double.parse(_bPrice.text),
-                                    ),
-                                  )
-                                      .then((_) {
-                                    Navigator.pop(context);
-                                    _nameController.clear();
-                                    _uom.clear();
-                                    _sPrice.clear();
-                                    _bPrice.clear();
-                                  }).catchError((error) {
-                                    if (error
-                                        .toString()
-                                        .contains("NOINTERNET")) {
-                                      showToast(
-                                          "There seems to be a problem. Please try again later.");
-                                    } else {
-                                      print(error);
-                                      showToast(
-                                          "There seems to be a problem. Please try again later.");
-                                    }
-                                  });
-                                }
-                              },
-                            )
-                          ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: (MediaQuery.of(context).size.width) * 0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0,
+                              horizontal: 16.0,
+                            ),
+                            child: TextField(
+                              controller: _uom,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                hintText: "UOM",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Flex(
+                      direction: Axis.horizontal,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          width: (MediaQuery.of(context).size.width) * 0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                            child: TextField(
+                              controller: _bPrice,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              decoration: InputDecoration(
+                                hintText: "Buying Price",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: (MediaQuery.of(context).size.width) * 0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                            child: TextField(
+                              controller: _sPrice,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              decoration: InputDecoration(
+                                hintText: "Selling Price",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
                         )
                       ],
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 8.0,
+                        left: 16.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(
+                            Icons.add_circle,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          OverflowBar(
+                            children: <Widget>[
+                              TextButton(
+                                child: Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  _nameController.clear();
+                                  _uom.clear();
+                                  _sPrice.clear();
+                                  _bPrice.clear();
+                                },
+                              ),
+                              TextButton(
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (_nameController.text.isNotEmpty &&
+                                      _sPrice.text.isNotEmpty &&
+                                      _bPrice.text.isNotEmpty &&
+                                      _uom.text.isNotEmpty) {
+                                    dbService
+                                        .addProduct(
+                                      Product(
+                                        name: _nameController.text,
+                                        uom: _uom.text,
+                                        sellingPrice:
+                                            double.parse(_sPrice.text),
+                                        buyingPrice: double.parse(_bPrice.text),
+                                      ),
+                                    )
+                                        .then((_) {
+                                      Navigator.pop(context);
+                                      _nameController.clear();
+                                      _uom.clear();
+                                      _sPrice.clear();
+                                      _bPrice.clear();
+                                    }).catchError((error) {
+                                      if (error
+                                          .toString()
+                                          .contains("NOINTERNET")) {
+                                        showToast(
+                                            "There seems to be a problem. Please try again later.");
+                                      } else {
+                                        print(error);
+                                        showToast(
+                                            "There seems to be a problem. Please try again later.");
+                                      }
+                                    });
+                                  }
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            )));
   }
 }

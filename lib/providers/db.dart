@@ -538,27 +538,21 @@ class DatabaseProvider {
     return wasteSnapshot.docs
         .map((document) => Waste(
               product: Product(
-                name: (document.data() as Map<String, dynamic>)["product"]
-                    ["name"],
-                uom: (document.data() as Map<String, dynamic>)["product"]
-                    ["uom"],
-                buyingPrice: (document.data()
-                    as Map<String, dynamic>)["product"]["buyingPrice"],
-                sellingPrice: (document.data()
-                    as Map<String, dynamic>)["product"]["sellingPrice"],
-                productid: (document.data() as Map<String, dynamic>)["product"]
-                    ["productid"],
+                name: (document.data())["product"]["name"],
+                uom: (document.data())["product"]["uom"],
+                buyingPrice: (document.data())["product"]["buyingPrice"],
+                sellingPrice: (document.data())["product"]["sellingPrice"],
+                productid: (document.data())["product"]["productid"],
               ),
               shop: Shop(
-                shop: (document.data() as Map<String, dynamic>)["shop"]["shop"],
-                shopid: (document.data() as Map<String, dynamic>)["shop"]
-                    ["shopid"],
+                shop: (document.data())["shop"]["shop"],
+                shopid: (document.data())["shop"]["shopid"],
               ),
-              stockid: (document.data() as Map<String, dynamic>)["stockid"],
-              wasteid: (document.data() as Map<String, dynamic>)["wasteid"],
-              dateadded: (document.data() as Map<String, dynamic>)["dateadded"],
-              timestamp: (document.data() as Map<String, dynamic>)["timestamp"],
-              quantity: (document.data() as Map<String, dynamic>)["quantity"],
+              stockid: (document.data())["stockid"],
+              wasteid: (document.data())["wasteid"],
+              dateadded: (document.data())["dateadded"],
+              timestamp: (document.data())["timestamp"],
+              quantity: (document.data())["quantity"],
             ))
         .toList();
   }

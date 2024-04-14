@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ofm_admin/pages/add_shop.dart';
 import './pages/tabs.dart';
 import './pages/login.dart';
 import './pages/register.dart';
@@ -6,8 +7,13 @@ import './pages/splash.dart';
 import './pages/verify.dart';
 import './providers/db.dart';
 import './providers/connection.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -40,6 +46,7 @@ class _MyAppState extends State<MyApp> {
         "/register": (BuildContext context) => RegisterPage(),
         "/verify": (BuildContext context) => VerifyPage(),
         "/home": (BuildContext context) => TabsPage(),
+        "/addShopPage": (BuildContext context) => AddShopPage()
       },
       theme: ThemeData(
         primaryColor: Colors.blueAccent,

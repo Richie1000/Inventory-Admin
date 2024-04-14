@@ -81,6 +81,7 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
 
 class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
   late final AnimationController _animationController;
+
   _ModalBottomSheetRoute({
     required this.builder,
     required this.theme,
@@ -89,9 +90,9 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
     required this.resizeToAvoidBottomPadding,
     required this.dismissOnTap,
   }) : super(settings: settings) {
-    //_animationController = AnimationController(vsync: this);
+    final overlay = navigator!.overlay;
+    _animationController = BottomSheet.createAnimationController(overlay!);
   }
-
   final WidgetBuilder builder;
   final ThemeData theme;
   final bool resizeToAvoidBottomPadding;
@@ -121,7 +122,7 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
 
     // Create the animation controller with the overlay
     _animationController = BottomSheet.createAnimationController(overlay!);
-    return _animationController!;
+    return _animationController;
   }
 
   @override
@@ -134,7 +135,7 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
       removeTop: true,
       child: new _ModalBottomSheet<T>(route: this),
     );
-    if (theme != null) bottomSheet = new Theme(data: theme, child: bottomSheet);
+    bottomSheet = new Theme(data: theme, child: bottomSheet);
     return bottomSheet;
   }
 }
@@ -168,11 +169,9 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
 Future<T?> showModalBottomSheetApp<T>({
   required BuildContext context,
   required WidgetBuilder builder,
-  bool dismissOnTap: false,
-  bool resizeToAvoidBottomPadding: true,
+  bool dismissOnTap = false,
+  bool resizeToAvoidBottomPadding = true,
 }) {
-  assert(context != null);
-  assert(builder != null);
   return Navigator.push(
     context,
     new _ModalBottomSheetRoute<T>(

@@ -22,8 +22,8 @@ class Stock {
       "quantity": quantity,
       "dateadded": dateadded.toString(),
       "shop": {
-        "shop": shop!.shop,
-        "shopid": shop!.shopid,
+        "shop": shop.shop,
+        "shopid": shop.shopid,
       },
       "stockid": stockid
     };

@@ -43,7 +43,7 @@ class _WastePageState extends State<WastePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         verticalDirection: VerticalDirection.down,
         children: <Widget>[
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
@@ -70,12 +70,10 @@ class _WastePageState extends State<WastePage> {
                     lastDate: DateTime(DateTime.now().year + 1),
                   ).then(
                     (DateTime date) {
-                      if (date != null) {
-                        setState(() {
-                          selecteddate = DateFormat("yMd").format(date);
-                          _getWaste(selecteddate, widget.shop);
-                        });
-                      }
+                      setState(() {
+                        selecteddate = DateFormat("yMd").format(date);
+                        _getWaste(selecteddate, widget.shop);
+                      });
                     } as FutureOr Function(DateTime? value),
                   );
                 },

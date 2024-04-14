@@ -54,7 +54,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         verticalDirection: VerticalDirection.down,
         children: <Widget>[
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               Visibility(
@@ -195,8 +195,8 @@ class _EmployeesPageState extends State<EmployeesPage> {
                                                     MainAxisAlignment.start,
                                                 children: employee.shops
                                                     .map(
-                                                      (shop) => Text(
-                                                          shop?.shop ?? ''),
+                                                      (shop) =>
+                                                          Text(shop.shop ?? ''),
                                                     )
                                                     .toList(),
                                               ),
@@ -343,7 +343,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                             Icons.add_circle,
                             color: Theme.of(context).primaryColor,
                           ),
-                          ButtonBar(
+                          OverflowBar(
                             children: <Widget>[
                               TextButton(
                                 child: Text("Cancel"),
@@ -430,9 +430,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
         orElse: () => Shop(shop: '', shopid: ''), // Provide default Shop object
       );
 
-      if (foundEmployeeShop != null) {
-        selectedShops.add(foundEmployeeShop);
-      }
+      selectedShops.add(foundEmployeeShop);
     });
 
     showDialog(
@@ -513,7 +511,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                               Icons.add_circle,
                               color: Theme.of(context).primaryColor,
                             ),
-                            ButtonBar(
+                            OverflowBar(
                               children: <Widget>[
                                 TextButton(
                                   child: Text("Cancel"),

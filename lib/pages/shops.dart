@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:ofm_admin/widgets/custom_bottom_modal_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/shop.dart';
 import '../providers/db.dart';
@@ -22,7 +23,7 @@ class _ShopsPageState extends State<ShopsPage> {
   }
 
   void showToast(String message) {
-    HapticFeedback.vibrate();
+    HapticFeedback.lightImpact();
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
@@ -45,7 +46,7 @@ class _ShopsPageState extends State<ShopsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         verticalDirection: VerticalDirection.down,
         children: <Widget>[
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
@@ -58,6 +59,7 @@ class _ShopsPageState extends State<ShopsPage> {
                 ),
                 onPressed: () {
                   _addShop(context);
+                  // Navigator.pushReplacementNamed(context, "/addShopPage");
                 },
                 // shape: RoundedRectangleBorder(
                 //   borderRadius: BorderRadius.circular(30.0),
@@ -160,103 +162,102 @@ class _ShopsPageState extends State<ShopsPage> {
   }
 
   void _addShop(BuildContext context) {
-    showModalBottomSheetApp(
+    showModalBottomSheet(
         context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            color: Color(0xFF737373),
-            child: Container(
-              decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0),
+        builder: (context) => CustomModalBottomSheet(
+                child: Container(
+              color: Color(0xFF737373),
+              child: Container(
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.only(
+                    topLeft: const Radius.circular(10.0),
+                    topRight: const Radius.circular(10.0),
+                  ),
                 ),
-              ),
-              child: Wrap(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 16.0,
-                    ),
-                    child: TextField(
-                      controller: _shopController,
-                      autofocus: true,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: "Shop Name",
-                        hintStyle: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black54,
+                child: Wrap(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 16.0,
+                      ),
+                      child: TextField(
+                        controller: _shopController,
+                        autofocus: true,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          hintText: "Shop Name",
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black54,
+                          ),
+                          focusedBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
                         ),
-                        focusedBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8.0,
-                      bottom: 8.0,
-                      left: 16.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Icon(
-                          Icons.add_circle,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        ButtonBar(
-                          children: <Widget>[
-                            TextButton(
-                              child: Text("Cancel"),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _shopController.clear();
-                              },
-                            ),
-                            TextButton(
-                              child: Text(
-                                "Save",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 8.0,
+                        bottom: 8.0,
+                        left: 16.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(
+                            Icons.add_circle,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          OverflowBar(
+                            children: <Widget>[
+                              TextButton(
+                                child: Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  _shopController.clear();
+                                },
                               ),
-                              onPressed: () {
-                                if (_shopController.text.isNotEmpty) {
-                                  dbService
-                                      .addShop(
-                                    _shopController.text,
-                                  )
-                                      .then((_) {
-                                    Navigator.pop(context);
-                                    _shopController.clear();
-                                  }).catchError((error) {
-                                    if (error
-                                        .toString()
-                                        .contains("NOINTERNET")) {
-                                      showToast(
-                                          "There seems to be a problem. Please try again later.");
-                                    } else {
-                                      print(error);
-                                      showToast(
-                                          "There seems to be a problem. Please try again later.");
-                                    }
-                                  });
-                                }
-                              },
-                            )
-                          ],
-                        )
-                      ],
+                              TextButton(
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (_shopController.text.isNotEmpty) {
+                                    dbService
+                                        .addShop(
+                                      _shopController.text,
+                                    )
+                                        .then((_) {
+                                      Navigator.pop(context);
+                                      _shopController.clear();
+                                    }).catchError((error) {
+                                      if (error
+                                          .toString()
+                                          .contains("NOINTERNET")) {
+                                        showToast(
+                                            "There seems to be a problem. Please try again later.");
+                                      } else {
+                                        print(error);
+                                        showToast(
+                                            "There seems to be a problem. Please try again later.");
+                                      }
+                                    });
+                                  }
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            )));
   }
 }

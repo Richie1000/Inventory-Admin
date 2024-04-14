@@ -119,6 +119,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   if (value!.isEmpty) {
                     return 'Please add username';
                   }
+                  return null;
                 },
               ),
             ),
@@ -150,6 +151,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   if (value!.isEmpty) {
                     return 'Please add email';
                   }
+                  return null;
                 },
               ),
             ),
@@ -179,6 +181,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   } else if (value.length < 6) {
                     return 'Password should be more than 6 characters';
                   }
+                  return null;
                 },
               ),
             ),

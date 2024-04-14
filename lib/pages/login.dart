@@ -118,6 +118,7 @@ class _LoginFormState extends State<LoginForm> {
                   if (value!.isEmpty) {
                     return 'Please add email';
                   }
+                  return null;
                 },
               ),
             ),
