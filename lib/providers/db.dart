@@ -41,28 +41,27 @@ class DatabaseProvider {
         .collection('employees')
         .snapshots()
         .listen((QuerySnapshot employeesSnapshot) {
-      // employees.add(
-      //   employeesSnapshot.docs.map((document) {
-      //     dynamic data = document.data();
-      //     if (data != null && data is Map<String, dynamic>) {
-      //       List shops = data["shops"] ?? [];
-      //     }
+      List<Employee> employees = [];
+      employeesSnapshot.docs.forEach((document) {
+        dynamic data = document.data();
+        List<Map<String, dynamic>> rawShops = data["shops"] ?? [];
 
-      //     return Employee(
-      //       name: (document.data() as Map<String, dynamic>)["name"],
-      //       email: (document.data() as Map<String, dynamic>)["email"],
-      //       active: (document.data() as Map<String, dynamic>)["active"],
-      //       shops: shops
-      //           .map(
-      //             (shop) => Shop(
-      //               shop: shop["shop"],
-      //               shopid: shop["shopid"],
-      //             ),
-      //           )
-      //           .toList(),
-      //     );
-      //   }).toList(),
-      // );
+        List<Shop> shops = rawShops.map((shop) {
+          return Shop(
+            shop: shop["shop"],
+            shopid: shop["shopid"],
+          );
+        }).toList(); // Convert to list of Shop
+
+        employees.add(
+          Employee(
+            name: data["name"] ?? "",
+            email: data["email"] ?? "",
+            active: data["active"] ?? false,
+            shops: shops, // Now a list of Shop
+          ),
+        );
+      });
     });
 
     _db
@@ -240,16 +239,30 @@ class DatabaseProvider {
   Future<void> deleteEmployees(List<Employee> employees) async {
     if (connectionService.connected.value) {
       try {
-        int deleted = 0;
-        for (var employee in employees) {
-          await _db.collection('employees').doc(employee.email).delete();
-          deleted++;
-          if (deleted == employees.length) {
-            return;
+        try {
+          for (var employee in employees) {
+            // Ensure it loops over all employees
+            await _db.collection('employees').doc(employee.email).delete();
           }
+        } catch (e) {
+          throw Exception("Error deleting employees: $e");
         }
       } catch (e) {
         throw e;
+      }
+    } else {
+      throw Exception("NOINTERNET");
+    }
+  }
+
+  Future<void> deleteEmployee(Employee employee) async {
+    if (connectionService.connected.value) {
+      // Check internet connection
+      try {
+        // Delete the employee from the collection using the unique identifier
+        await _db.collection('employees').doc(employee.email).delete();
+      } catch (e) {
+        throw Exception("Error deleting employee: $e");
       }
     } else {
       throw Exception("NOINTERNET");
@@ -612,4 +625,17 @@ class DatabaseProvider {
     sales.close();
     monthsales.close();
   }
+}
+
+final FirebaseFirestore _firestoree = FirebaseFirestore.instance;
+
+Stream<List<Employee>> getItemsStream(String collectionPath) {
+  return _firestoree
+      .collection(collectionPath)
+      .snapshots()
+      .map((querySnapshot) {
+    return querySnapshot.docs.map((doc) {
+      return Employee.fromFirebase(doc.data() as Map<String, dynamic>);
+    }).toList();
+  });
 }

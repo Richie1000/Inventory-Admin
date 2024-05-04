@@ -34,4 +34,21 @@ class Employee {
       roles: map['roles'],
     );
   }
+
+  factory Employee.fromFirebase(Map<String, dynamic> map) {
+    // Correct syntax for list initialization without explicit variable assignment
+    List<Shop> shopObjects = (map['shops'] as List<dynamic>).map((shop) {
+      return Shop(
+        shop: shop['shop'],
+        shopid: shop['shopid'],
+      );
+    }).toList();
+
+    return Employee(
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      active: map['active'] ?? false,
+      shops: shopObjects,
+    );
+  }
 }

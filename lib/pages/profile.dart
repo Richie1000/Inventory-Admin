@@ -147,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ListTile(
                 title: Text('Sales this month'),
                 trailing: AnimatedDefaultTextStyle(
-                  child: Text("KES ${monthsales.toString()}"),
+                  child: Text("GHC ${monthsales.toString()}"),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ListTile(
                 title: Text('Waste this month'),
                 trailing: AnimatedDefaultTextStyle(
-                  child: Text("KES ${monthwaste.toString()}"),
+                  child: Text("GHC ${monthwaste.toString()}"),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -177,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ListTile(
                 title: Text('Profit margin'),
                 trailing: AnimatedDefaultTextStyle(
-                  child: Text("KES ${(monthsales - monthwaste).toString()}"),
+                  child: Text("GHC ${(monthsales - monthwaste).toString()}"),
                   style: monthsales > monthwaste
                       ? TextStyle(
                           fontWeight: FontWeight.bold,

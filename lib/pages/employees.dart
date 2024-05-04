@@ -5,6 +5,7 @@ import '../models/employee.dart';
 import '../providers/db.dart';
 import '../widgets/bottom_sheet.dart';
 import '../models/shop.dart';
+import '../widgets/data_table.dart';
 
 bool activeDropdownValue = false;
 late List<Shop> selectedShops;
@@ -45,10 +46,17 @@ class _EmployeesPageState extends State<EmployeesPage> {
       );
     }
 
+    print("Rebuilding!!!!");
     return Scaffold(
       appBar: AppBar(
         title: Text("Employees"),
       ),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(Icons.add),
+          onPressed: () {
+            _addEmployee(context);
+          }),
       body: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -57,24 +65,24 @@ class _EmployeesPageState extends State<EmployeesPage> {
           OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
-              Visibility(
-                visible: shops.length > 0,
-                child: ElevatedButton.icon(
-                  icon: Icon(
-                    Icons.add_circle,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  label: Text(
-                    'Add',
-                  ),
-                  onPressed: () {
-                    _addEmployee(context);
-                  },
-                  // : RoundedRectangleBorder(
-                  //   borderRadius: BorderRadius.circular(30.0),
-                  // ),
-                ),
-              ),
+              // Visibility(
+              //   visible: shops.length > 0,
+              //   child: ElevatedButton.icon(
+              //     icon: Icon(
+              //       Icons.add_circle,
+              //       color: Theme.of(context).primaryColor,
+              //     ),
+              //     label: Text(
+              //       'Add',
+              //     ),
+              //     onPressed: () {
+              //       _addEmployee(context);
+              //     },
+              //     // : RoundedRectangleBorder(
+              //     //   borderRadius: BorderRadius.circular(30.0),
+              //     // ),
+              //   ),
+              // ),
               Visibility(
                 visible: selectedEmployees.length == 1 && shops.length > 0,
                 child: ElevatedButton.icon(
@@ -130,111 +138,67 @@ class _EmployeesPageState extends State<EmployeesPage> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-                SingleChildScrollView(
-                  child: StreamBuilder<List<Employee>>(
-                      stream: dbService.employees.stream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<Employee>> snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return Container(
-                                width: (MediaQuery.of(context).size.width),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: List<Widget>.filled(
-                                    5,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 8.0),
-                                      child: Shimmer.fromColors(
-                                        baseColor: Colors.black12,
-                                        highlightColor: Colors.black26,
-                                        child: Container(
-                                          width: (MediaQuery.of(context)
-                                              .size
-                                              .width),
-                                          height: 20.0,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    growable: false,
+                StreamBuilder<List<Employee>>(
+                  stream: getItemsStream("employees"),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Employee>> snapshot) {
+                    // Log the current state
+                    print('Snapshot data: ${snapshot.data}');
+                    print(dbService.employees.stream);
+
+                    // If there's an error, show the error message
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+
+                    // If the stream is still waiting, show a loading animation
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: List<Widget>.filled(
+                            5,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 8.0),
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.black12,
+                                highlightColor: Colors.black26,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 20.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
-                              );
-                            default:
-                              return DataTable(
-                                rows: snapshot.data!
-                                    .map((employee) => DataRow(
-                                          selected: selectedEmployees
-                                              .contains(employee),
-                                          onSelectChanged: (selected) {
-                                            _onSelectedRow(selected!, employee);
-                                          },
-                                          cells: <DataCell>[
-                                            DataCell(
-                                              Text(
-                                                employee.name,
-                                              ),
-                                            ),
-                                            DataCell(
-                                              Text(
-                                                employee.email,
-                                              ),
-                                            ),
-                                            DataCell(
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: employee.shops
-                                                    .map(
-                                                      (shop) =>
-                                                          Text(shop.shop ?? ''),
-                                                    )
-                                                    .toList(),
-                                              ),
-                                            ),
-                                            DataCell(
-                                              Text(
-                                                employee.active.toString(),
-                                              ),
-                                            ),
-                                          ],
-                                        ))
-                                    .toList(),
-                                columns: <DataColumn>[
-                                  DataColumn(
-                                      label: Text("Name"),
-                                      numeric: false,
-                                      tooltip: "This is the employee's name"),
-                                  DataColumn(
-                                      label: Text("Email"),
-                                      numeric: false,
-                                      tooltip: "This is the employee's Email"),
-                                  DataColumn(
-                                    label: Text("Shops"),
-                                    numeric: false,
-                                    tooltip:
-                                        "This is the employee's assigned shops",
-                                  ),
-                                  DataColumn(
-                                    label: Text("Active"),
-                                    numeric: false,
-                                    tooltip:
-                                        "Determines if employee can make changes",
-                                  ),
-                                ],
-                              );
-                          }
-                        }
-                      }),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    // If the connection state is done and no data is received, inform the user
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        !snapshot.hasData) {
+                      return Text("No data received");
+                    }
+
+                    // If there's no data or data is null, indicate it's empty
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      return Text("No employees found");
+                    }
+
+                    // Now that we have data, let's create the DataTable
+                    final employees = snapshot.data!;
+
+                    return DataTableWithSelection(
+                      employees: employees,
+                    );
+                  },
                 ),
               ],
             ),
@@ -272,11 +236,14 @@ class _EmployeesPageState extends State<EmployeesPage> {
         return ShopsAlertDialog();
       },
     ).then((res) {
+      //print(res);
       if (res && res != null) {
-        showModalBottomSheetApp(
+        //print("executing");
+        showModalBottomSheet(
           context: context,
           builder: (BuildContext bc) {
             return Container(
+              height: MediaQuery.of(context).size.height / 1.7,
               color: Color(0xFF737373),
               child: Container(
                 decoration: new BoxDecoration(
@@ -295,7 +262,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                       ),
                       child: TextField(
                         controller: _nameController,
-                        autofocus: true,
+                        //autofocus: true,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           hintText: "Employee Name",
@@ -464,7 +431,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                         ),
                         child: TextField(
                           controller: _nameController,
-                          autofocus: true,
+                          //autofocus: true,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             hintText: "Employee Name",

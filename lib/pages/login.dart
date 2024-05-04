@@ -81,7 +81,7 @@ class _LoginFormState extends State<LoginForm> {
                 baseColor: Theme.of(context).primaryColor,
                 highlightColor: Colors.yellow,
                 child: Text(
-                  'INVENTORY',
+                  'ARTURO',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 60.0,

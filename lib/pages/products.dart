@@ -267,12 +267,16 @@ class _ProductsPageState extends State<ProductsPage> {
     _uom.text = product.uom!;
     _sPrice.text = product.sellingPrice.toString();
     _bPrice.text = product.buyingPrice.toString();
-    showModalBottomSheetApp(
+    showModalBottomSheet(
       context: context,
+      //isScrollControlled: true,
       builder: (BuildContext bc) {
         return Container(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           color: Color(0xFF737373),
           child: Container(
+            height: MediaQuery.of(context).size.height / 1.7,
             decoration: new BoxDecoration(
               color: Colors.white,
               borderRadius: new BorderRadius.only(
@@ -296,7 +300,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         ),
                         child: TextField(
                           controller: _nameController,
-                          autofocus: true,
+                          //autofocus: true,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             hintText: "Product Name",
@@ -402,6 +406,7 @@ class _ProductsPageState extends State<ProductsPage> {
                               _uom.clear();
                               _sPrice.clear();
                               _bPrice.clear();
+                              _selectedProducts.clear();
                             },
                           ),
                           TextButton(
@@ -432,6 +437,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                   _uom.clear();
                                   _sPrice.clear();
                                   _bPrice.clear();
+                                  _selectedProducts.clear();
                                 }).catchError((error) {
                                   if (error.toString().contains("NOINTERNET")) {
                                     showToast(
@@ -487,7 +493,7 @@ class _ProductsPageState extends State<ProductsPage> {
                             ),
                             child: TextField(
                               controller: _nameController,
-                              autofocus: true,
+                              //autofocus: true,
                               keyboardType: TextInputType.text,
                               decoration: InputDecoration(
                                 hintText: "Product Name",
