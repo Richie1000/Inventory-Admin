@@ -7,6 +7,7 @@ class Employee {
   final String email;
   final Role? roles;
   final bool active;
+  final String? id;
 
   Employee({
     required this.name,
@@ -14,6 +15,7 @@ class Employee {
     required this.email,
     required this.active,
     this.roles,
+    this.id,
   });
 
   static Future<Employee> fromMap(Map<String, dynamic> map) async {
@@ -27,12 +29,12 @@ class Employee {
         .toList();
 
     return Employee(
-      name: map['name'],
-      shops: shopObjects,
-      email: map['email'],
-      active: map['active'],
-      roles: map['roles'],
-    );
+        name: map['name'],
+        shops: shopObjects,
+        email: map['email'],
+        active: map['active'],
+        roles: map['roles'],
+        id: map['id']);
   }
 
   factory Employee.fromFirebase(Map<String, dynamic> map) {
@@ -45,10 +47,10 @@ class Employee {
     }).toList();
 
     return Employee(
-      name: map['name'] ?? '',
-      email: map['email'] ?? '',
-      active: map['active'] ?? false,
-      shops: shopObjects,
-    );
+        name: map['name'] ?? '',
+        email: map['email'] ?? '',
+        active: map['active'] ?? false,
+        shops: shopObjects,
+        id: map['id'] ?? '');
   }
 }

@@ -510,12 +510,17 @@ class _EmployeesPageState extends State<EmployeesPage> {
                                           .then((_) {
                                         Navigator.pop(context);
                                         _nameController.clear();
-                                        selectedShops.clear();
+                                        selectedEmployees.clear();
+
+                                        //print( .length.toString());
                                         activeDropdownValue = false;
 
                                         setState(() {
                                           selectedEmployees = [];
                                         });
+                                        print("selected Employees: " +
+                                            selectedEmployees.length
+                                                .toString());
                                       }).catchError(
                                         (error) {
                                           if (error
@@ -538,6 +543,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                                               ),
                                             );
                                           }
+                                          //_onSelectedRow(false, employee);
                                         },
                                       );
                                     }

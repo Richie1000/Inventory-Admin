@@ -64,13 +64,17 @@ class _DataTableWithSelectionState extends State<DataTableWithSelection> {
                     name: nameController.text,
                     email: emailController.text,
                     active: employee.active,
-                    shops: employee.shops);
+                    shops: employee.shops,
+                    id: employee.id);
 
                 // Update the employee in the database
-                dbService.editEmployee(
-                    updatedEmployee); // Implement the database update logic
+                dbService.editEmployee(updatedEmployee);
+
+                // Implement the database update logic
 
                 Navigator.pop(context); // Close the dialog after saving
+
+                selectedEmployees.clear();
               },
               child: Text("Save"),
             ),
@@ -134,20 +138,26 @@ class _DataTableWithSelectionState extends State<DataTableWithSelection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  if (selectedEmployees.isNotEmpty) {
-                    final employee = selectedEmployees
-                        .first; // Get the first selected employee
-                    _editSelectedEmployee(context,
-                        employee); // Call the function to show the edit dialog
-                  }
-                },
+              Visibility(
+                visible: selectedEmployees.isNotEmpty,
+                child: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    if (selectedEmployees.isNotEmpty) {
+                      final employee = selectedEmployees
+                          .first; // Get the first selected employee
+                      _editSelectedEmployee(context,
+                          employee); // Call the function to show the edit dialog
+                    }
+                  },
+                ),
               ),
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: _deleteSelectedEmployee,
+              Visibility(
+                visible: selectedEmployees.isNotEmpty,
+                child: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: _deleteSelectedEmployee,
+                ),
               ),
             ],
           ),

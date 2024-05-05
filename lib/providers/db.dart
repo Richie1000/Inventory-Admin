@@ -152,6 +152,19 @@ class DatabaseProvider {
     }
   }
 
+  Future<List<Product>> getAllProducts() async {
+    var querySnapshot = await _db.collection('products').get();
+    return querySnapshot.docs.map((doc) {
+      return Product(
+        name: doc['name'],
+        productid: doc['productid'],
+        uom: doc['uom'],
+        buyingPrice: doc['buyingPrice'].toDouble(),
+        sellingPrice: doc['sellingPrice'].toDouble(),
+      );
+    }).toList();
+  }
+
   Future<void> deleteProducts(List<Product> products) async {
     if (connectionService.connected.value) {
       try {
@@ -173,6 +186,7 @@ class DatabaseProvider {
   }
 
   Future<void> editProduct(Product product) async {
+    print("here");
     if (connectionService.connected.value) {
       try {
         return await _db.collection('products').doc(product.productid).update({
@@ -192,21 +206,38 @@ class DatabaseProvider {
   Future<void> addEmployee(Employee employee) async {
     if (connectionService.connected.value) {
       try {
-        return await _db.collection('employees').doc(employee.email).set({
+        DocumentReference added = await _db.collection('employees').add({
           "name": employee.name,
           "email": employee.email,
+          //"shops": employee.shops,
+          "roles": {"admin": false, "editor": true},
+          "active": employee.active,
           "shops": employee.shops
               .map((shop) => {
                     "shop": shop.shop,
                     "shopid": shop.shopid,
                   })
               .toList(),
-          "roles": {
-            "admin": false,
-            "editor": true,
-          },
-          "active": employee.active
         });
+
+        return await added.update({
+          "id": added.id,
+        });
+        // return await _db.collection('employees').doc(employee.email).set({
+        //   "name": employee.name,
+        //   "email": employee.email,
+        //   "shops": employee.shops
+        //       .map((shop) => {
+        //             "shop": shop.shop,
+        //             "shopid": shop.shopid,
+        //           })
+        //       .toList(),
+        //   "roles": {
+        //     "admin": false,
+        //     "editor": true,
+        //   },
+        //   "active": employee.active
+        // });
       } catch (e) {
         throw e;
       }
@@ -218,7 +249,9 @@ class DatabaseProvider {
   Future<void> editEmployee(Employee employee) async {
     if (connectionService.connected.value) {
       try {
-        return await _db.collection('employees').doc(employee.email).update({
+        print(employee.id);
+        print(employee.email);
+        return await _db.collection('employees').doc(employee.id).update({
           "name": employee.name,
           "shops": employee.shops
               .map((shop) => {
@@ -278,7 +311,7 @@ class DatabaseProvider {
               shop: (shop.data() as Map<String, dynamic>)[
                   "shop"], // Invoke data() method to get the map
               shopid: (shop.data() as Map<String, dynamic>)[
-                  "shopId"], // Similarly, invoke data() here
+                  "shopid"], // Similarly, invoke data() here
             ),
           )
           .toList();

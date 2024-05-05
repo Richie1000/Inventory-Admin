@@ -88,7 +88,15 @@ class _ProductsPageState extends State<ProductsPage> {
                     'Edit',
                   ),
                   onPressed: () {
-                    _editProduct(context, _selectedProducts[0]);
+                    print("started");
+                    print(_selectedProducts[0]);
+                    var id = _selectedProducts[0].productid;
+                    print(_selectedProducts[0].buyingPrice);
+                    print(
+                        "Selected Product: ${_selectedProducts[0]}"); // Print the entire object
+
+                    _editSelectedProduct(context, _selectedProducts[0]);
+                    //_editProduct(context, _selectedProducts[0]);
                   },
                   // shape: RoundedRectangleBorder(
                   //   borderRadius: BorderRadius.circular(30.0),
@@ -262,11 +270,104 @@ class _ProductsPageState extends State<ProductsPage> {
     });
   }
 
+  Future<List<Product>> getProductsFromDatabase() async {
+    var products = await dbService
+        .getAllProducts(); // Assume this returns a list of Product objects
+    return products.map((product) {
+      return Product(
+          name: product.name,
+          productid: product.productid, // Access attributes directly
+          uom: product.uom,
+          buyingPrice: product.buyingPrice,
+          sellingPrice: product.sellingPrice);
+    }).toList();
+  }
+
+  void _editSelectedProduct(BuildContext context, Product product) {
+    // Check if productid is initialized
+    //assert(product.productid != null, "Product ID should not be null");
+
+    // Create text controllers for each field
+    final TextEditingController nameController =
+        TextEditingController(text: product.name);
+    final TextEditingController uomController =
+        TextEditingController(text: product.uom);
+    final TextEditingController buyingPriceController =
+        TextEditingController(text: product.buyingPrice.toString());
+    final TextEditingController sellingPriceController =
+        TextEditingController(text: product.sellingPrice.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Edit Product"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: "Name"),
+              ),
+              TextField(
+                controller: uomController,
+                decoration: InputDecoration(labelText: "Unit of Measure"),
+              ),
+              TextField(
+                controller: buyingPriceController,
+                decoration: InputDecoration(labelText: "Buying Price"),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: sellingPriceController,
+                decoration: InputDecoration(labelText: "Selling Price"),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close without saving
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                print(
+                    "Save button pressed"); // Debugging to ensure button works
+
+                final updatedProduct = Product(
+                  name: nameController.text,
+                  productid: product.productid, // Ensure productid is not null
+                  uom: uomController.text,
+                  buyingPrice: double.parse(buyingPriceController.text),
+                  sellingPrice: double.parse(sellingPriceController.text),
+                );
+
+                print(
+                    "Updated Product ID: ${updatedProduct.productid}"); // Verify the ID
+
+                await dbService
+                    .editProduct(updatedProduct); // Update the database
+
+                Navigator.pop(context); // Close the dialog after saving
+              },
+              child: Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _editProduct(BuildContext context, Product product) {
     _nameController.text = product.name;
     _uom.text = product.uom!;
     _sPrice.text = product.sellingPrice.toString();
     _bPrice.text = product.buyingPrice.toString();
+
     showModalBottomSheet(
       context: context,
       //isScrollControlled: true,
@@ -417,6 +518,8 @@ class _ProductsPageState extends State<ProductsPage> {
                               ),
                             ),
                             onPressed: () {
+                              print("Here");
+                              print(product.productid);
                               if (_nameController.text.isNotEmpty &&
                                   _sPrice.text.isNotEmpty &&
                                   _bPrice.text.isNotEmpty &&
@@ -438,13 +541,14 @@ class _ProductsPageState extends State<ProductsPage> {
                                   _sPrice.clear();
                                   _bPrice.clear();
                                   _selectedProducts.clear();
+                                  print("There");
                                 }).catchError((error) {
                                   if (error.toString().contains("NOINTERNET")) {
                                     showToast(
                                         "You dont have Internet Connection");
                                   } else {
                                     print(error);
-                                    showToast("Sorry, Something occured");
+                                    showToast(error);
                                   }
                                 });
                               }
