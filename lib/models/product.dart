@@ -11,6 +11,7 @@ class Product {
     required this.sellingPrice,
     this.uom,
     this.productid,
+    //required this.quantity
   });
 
   Map<String, dynamic> get map {
@@ -21,5 +22,15 @@ class Product {
       "buyingPrice": buyingPrice,
       "sellingPrice": sellingPrice,
     };
+  }
+
+  factory Product.fromFirebase(Map<String, dynamic> map) {
+    // Correct syntax for list initialization without explicit variable assignment
+    return Product(
+        name: map['name'] ?? '',
+        buyingPrice: map['buyingPrice'] ?? '',
+        sellingPrice: map['sellingPrice'] ?? false,
+        uom: map['uom'],
+        productid: map['productid'] ?? '');
   }
 }

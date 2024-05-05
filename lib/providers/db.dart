@@ -154,13 +154,29 @@ class DatabaseProvider {
 
   Future<List<Product>> getAllProducts() async {
     var querySnapshot = await _db.collection('products').get();
+
+    // Print the document ID and check if productid is correct
+    querySnapshot.docs.forEach((doc) {
+      print("Document ID: ${doc.id}"); // Print the document ID for debugging
+
+      var data = doc.data() as Map<String, dynamic>;
+
+      // Print individual product fields
+      print("Product name: ${data['name']}");
+      print("Product UOM: ${data['uom']}");
+      print("Buying Price: ${data['buyingPrice']}");
+      print("Selling Price: ${data['sellingPrice']}");
+    });
+
     return querySnapshot.docs.map((doc) {
+      var data = doc.data() as Map<String, dynamic>;
+
       return Product(
-        name: doc['name'],
-        productid: doc['productid'],
-        uom: doc['uom'],
-        buyingPrice: doc['buyingPrice'].toDouble(),
-        sellingPrice: doc['sellingPrice'].toDouble(),
+        name: data['name'], // Extracting the product name from the document
+        productid: doc.id, // Using the document ID as productid
+        uom: data['uom'], // Accessing other fields from the document
+        buyingPrice: data['buyingPrice'].toDouble(),
+        sellingPrice: data['sellingPrice'].toDouble(),
       );
     }).toList();
   }
@@ -186,7 +202,8 @@ class DatabaseProvider {
   }
 
   Future<void> editProduct(Product product) async {
-    print("here");
+    //print("here");
+    print(product.productid);
     if (connectionService.connected.value) {
       try {
         return await _db.collection('products').doc(product.productid).update({
@@ -669,6 +686,26 @@ Stream<List<Employee>> getItemsStream(String collectionPath) {
       .map((querySnapshot) {
     return querySnapshot.docs.map((doc) {
       return Employee.fromFirebase(doc.data() as Map<String, dynamic>);
+    }).toList();
+  });
+}
+
+Stream<List<Product>> getProductStream(String collectionPath) {
+  return _firestoree
+      .collection(collectionPath)
+      .snapshots()
+      .map((querySnapshot) {
+    return querySnapshot.docs.map((doc) {
+      var data = doc.data(); // Get the raw data
+      print("Document data: $data"); // Debugging to inspect the data
+
+      if (data is Map<String, dynamic>) {
+        // Ensure it's a map
+        return Product.fromFirebase(data);
+      } else {
+        throw Exception(
+            "Expected data to be Map<String, dynamic>, but got ${data.runtimeType}"); // Handle unexpected types
+      }
     }).toList();
   });
 }

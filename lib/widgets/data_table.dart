@@ -139,7 +139,7 @@ class _DataTableWithSelectionState extends State<DataTableWithSelection> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Visibility(
-                visible: selectedEmployees.isNotEmpty,
+                visible: selectedEmployees.length == 1,
                 child: IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ofm_admin/widgets/custom_bottom_modal_sheet.dart';
+import 'package:ofm_admin/widgets/products_data_table.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/db.dart';
 import '../widgets/bottom_sheet.dart';
@@ -62,23 +63,23 @@ class _ProductsPageState extends State<ProductsPage> {
           OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton.icon(
-                icon: Icon(
-                  Icons.add_circle,
-                  color: Theme.of(context).primaryColor,
-                ),
-                label: Text(
-                  'Add',
-                ),
-                onPressed: () {
-                  _addProduct(context);
-                },
-                // shape: RoundedRectangleBorder(
-                //   borderRadius: BorderRadius.circular(30.0),
-                // ),
-              ),
+              // ElevatedButton.icon(
+              //   icon: Icon(
+              //     Icons.add_circle,
+              //     color: Theme.of(context).primaryColor,
+              //   ),
+              //   label: Text(
+              //     'Add',
+              //   ),
+              //   onPressed: () {
+              //     _addProduct(context);
+              //   },
+              //   // shape: RoundedRectangleBorder(
+              //   //   borderRadius: BorderRadius.circular(30.0),
+              //   // ),
+              // ),
               Visibility(
-                visible: _selectedProducts.length == 1,
+                visible: _selectedProducts.length > 0,
                 child: ElevatedButton.icon(
                   icon: Icon(
                     Icons.edit,
@@ -94,8 +95,8 @@ class _ProductsPageState extends State<ProductsPage> {
                     print(_selectedProducts[0].buyingPrice);
                     print(
                         "Selected Product: ${_selectedProducts[0]}"); // Print the entire object
-
-                    _editSelectedProduct(context, _selectedProducts[0]);
+                    print(id);
+                    _editProduct(context, _selectedProducts[0]);
                     //_editProduct(context, _selectedProducts[0]);
                   },
                   // shape: RoundedRectangleBorder(
@@ -140,118 +141,49 @@ class _ProductsPageState extends State<ProductsPage> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-                SingleChildScrollView(
-                  child: StreamBuilder<List<Product>>(
-                      stream: dbService.products.stream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<List<Product>> snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return Container(
-                                width: (MediaQuery.of(context).size.width),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: List<Widget>.filled(
-                                    5,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 8.0),
-                                      child: Shimmer.fromColors(
-                                        baseColor: Colors.black12,
-                                        highlightColor: Colors.black26,
-                                        child: Container(
-                                          width: (MediaQuery.of(context)
-                                              .size
-                                              .width),
-                                          height: 20.0,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0)),
-                                          ),
+                StreamBuilder<List<Product>>(
+                    stream: getProductStream('products'),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Product>> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                            return Container(
+                              width: (MediaQuery.of(context).size.width),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: List<Widget>.filled(
+                                  5,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 8.0),
+                                    child: Shimmer.fromColors(
+                                      baseColor: Colors.black12,
+                                      highlightColor: Colors.black26,
+                                      child: Container(
+                                        width:
+                                            (MediaQuery.of(context).size.width),
+                                        height: 20.0,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0)),
                                         ),
                                       ),
                                     ),
-                                    growable: false,
                                   ),
+                                  growable: false,
                                 ),
-                              );
-                            default:
-                              return DataTable(
-                                columns: [
-                                  DataColumn(
-                                      label: Text("Name"),
-                                      numeric: false,
-                                      tooltip: "This is the product's name"),
-                                  DataColumn(
-                                      label: Text("UOM"),
-                                      numeric: false,
-                                      tooltip:
-                                          "This is the product's Unit of Measurement"),
-                                  DataColumn(
-                                      label: Text("Buying Price"),
-                                      numeric: true,
-                                      tooltip:
-                                          "This is the products's Buying Price"),
-                                  DataColumn(
-                                    label: Text("Selling Price"),
-                                    numeric: true,
-                                    tooltip:
-                                        "This is the product's Selling Price",
-                                  ),
-                                  DataColumn(
-                                      label: Text("Profit"),
-                                      numeric: true,
-                                      tooltip: "This is the Profit margin"),
-                                ],
-                                rows: snapshot.data!
-                                    .map(
-                                      (Product product) => DataRow(
-                                        selected:
-                                            _selectedProducts.contains(product),
-                                        onSelectChanged: (selected) {
-                                          _onSelectedRow(selected!, product);
-                                        },
-                                        cells: [
-                                          DataCell(
-                                            Text(
-                                              product.name,
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              product.uom!,
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              product.buyingPrice.toString(),
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              product.sellingPrice.toString(),
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              (product.sellingPrice -
-                                                      product.buyingPrice)
-                                                  .toString(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    .toList(),
-                              );
-                          }
+                              ),
+                            );
+
+                          default:
+                            return ProductsDataTable(products: snapshot.data!);
                         }
-                      }),
-                ),
+                      }
+                    }),
               ],
             ),
           ),
@@ -519,11 +451,12 @@ class _ProductsPageState extends State<ProductsPage> {
                             ),
                             onPressed: () {
                               print("Here");
-                              print(product.productid);
+                              //print(product.productid);
                               if (_nameController.text.isNotEmpty &&
                                   _sPrice.text.isNotEmpty &&
                                   _bPrice.text.isNotEmpty &&
                                   _uom.text.isNotEmpty) {
+                                // print("NEW PRODUCT ID : ${product.productid}");
                                 dbService
                                     .editProduct(
                                   Product(

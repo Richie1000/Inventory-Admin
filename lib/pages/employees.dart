@@ -143,8 +143,8 @@ class _EmployeesPageState extends State<EmployeesPage> {
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Employee>> snapshot) {
                     // Log the current state
-                    print('Snapshot data: ${snapshot.data}');
-                    print(dbService.employees.stream);
+                    //print('Snapshot data: ${snapshot.data}');
+                    //print(dbService.employees.stream);
 
                     // If there's an error, show the error message
                     if (snapshot.hasError) {
