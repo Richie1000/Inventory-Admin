@@ -95,14 +95,17 @@ class _ProductsDataTableState extends State<ProductsDataTable> {
 
   void _deleteSelectedProduct() {
     if (selectedProducts.isNotEmpty) {
-      final product = selectedProducts.first; // Get the first selected product
+      // Convert the Set to a List
+      final List<Product> productsToDelete = selectedProducts.toList();
 
+      // Create the confirmation dialog
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text("Delete Product"),
-            content: Text("Are you sure you want to delete ${product.name}?"),
+            content: Text(
+                "Are you sure you want to delete ${productsToDelete.map((p) => p.name).join(', ')}?"),
             actions: [
               TextButton(
                 onPressed: () {
@@ -112,7 +115,8 @@ class _ProductsDataTableState extends State<ProductsDataTable> {
               ),
               TextButton(
                 onPressed: () {
-                  //dbService.deleteProducts(selectedProducts as List<product>);  // Delete the product from the database
+                  dbService.deleteProducts(
+                      productsToDelete); // Delete the products from the database
 
                   selectedProducts.clear(); // Clear the selection
                   setState(() {}); // Update the UI to reflect changes

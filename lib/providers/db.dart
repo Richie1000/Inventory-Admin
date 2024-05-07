@@ -292,7 +292,7 @@ class DatabaseProvider {
         try {
           for (var employee in employees) {
             // Ensure it loops over all employees
-            await _db.collection('employees').doc(employee.email).delete();
+            await _db.collection('employees').doc(employee.id).delete();
           }
         } catch (e) {
           throw Exception("Error deleting employees: $e");
@@ -307,10 +307,11 @@ class DatabaseProvider {
 
   Future<void> deleteEmployee(Employee employee) async {
     if (connectionService.connected.value) {
+      print("here");
       // Check internet connection
       try {
         // Delete the employee from the collection using the unique identifier
-        await _db.collection('employees').doc(employee.email).delete();
+        await _db.collection('employees').doc(employee.id).delete();
       } catch (e) {
         throw Exception("Error deleting employee: $e");
       }
