@@ -63,21 +63,21 @@ class _ProductsPageState extends State<ProductsPage> {
           OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
-              // ElevatedButton.icon(
-              //   icon: Icon(
-              //     Icons.add_circle,
-              //     color: Theme.of(context).primaryColor,
-              //   ),
-              //   label: Text(
-              //     'Add',
-              //   ),
-              //   onPressed: () {
-              //     _addProduct(context);
-              //   },
-              //   // shape: RoundedRectangleBorder(
-              //   //   borderRadius: BorderRadius.circular(30.0),
-              //   // ),
-              // ),
+               ElevatedButton.icon(
+                 icon: Icon(
+                   Icons.add_circle,
+                   color: Theme.of(context).primaryColor,
+                 ),
+                 label: Text(
+                   'Add',
+                 ),
+                 onPressed: () {
+                   _addProduct(context);
+                 },
+                 // shape: RoundedRectangleBorder(
+                 //   borderRadius: BorderRadius.circular(30.0),
+                 // ),
+               ),
               Visibility(
                 visible: _selectedProducts.length > 0,
                 child: ElevatedButton.icon(
@@ -189,6 +189,8 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
         ],
       ),
+      // add button is add to the floater
+      floatingActionButton: FloatingActionButton.extended(label: Text("Add"),icon: Icon(Icons.add),onPressed:() {_addProduct(context);}),
     );
   }
 

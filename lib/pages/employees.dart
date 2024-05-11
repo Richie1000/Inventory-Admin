@@ -51,87 +51,90 @@ class _EmployeesPageState extends State<EmployeesPage> {
       appBar: AppBar(
         title: Text("Employees"),
       ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: Icon(Icons.add),
+      floatingActionButton: FloatingActionButton.extended(
+          label: Text("Add"),
+          icon:  Icon(Icons.add),
           onPressed: () {
             _addEmployee(context);
           }),
       body: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        verticalDirection: VerticalDirection.down,
+       
+       
         children: <Widget>[
-          OverflowBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Visibility(
-              //   visible: shops.length > 0,
-              //   child: ElevatedButton.icon(
-              //     icon: Icon(
-              //       Icons.add_circle,
-              //       color: Theme.of(context).primaryColor,
-              //     ),
-              //     label: Text(
-              //       'Add',
-              //     ),
-              //     onPressed: () {
-              //       _addEmployee(context);
-              //     },
-              //     // : RoundedRectangleBorder(
-              //     //   borderRadius: BorderRadius.circular(30.0),
-              //     // ),
-              //   ),
-              // ),
-              Visibility(
-                visible: selectedEmployees.length == 1 && shops.length > 0,
-                child: ElevatedButton.icon(
-                  icon: Icon(
-                    Icons.edit,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  label: Text(
-                    'Edit',
-                  ),
-                  onPressed: () {
-                    _editEmployee(context, selectedEmployees[0]);
-                  },
-                  // shape: RoundedRectangleBorder(
-                  //   borderRadius: BorderRadius.circular(30.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+             
+               
+                  // Visibility(
+                  //   visible: shops.length > 0,
+                  //   child: ElevatedButton.icon(
+                  //     icon: Icon(
+                  //       Icons.add_circle,
+                  //       color: Theme.of(context).primaryColor,
+                  //     ),
+                  //     label: Text(
+                  //       'Add',
+                  //     ),
+                  //     onPressed: () {
+                  //       _addEmployee(context);
+                  //     },
+                  //     // : RoundedRectangleBorder(
+                  //     //   borderRadius: BorderRadius.circular(30.0),
+                  //     // ),
+                  //   ),
                   // ),
-                ),
-              ),
-              Visibility(
-                visible: selectedEmployees.length > 0,
-                child: ElevatedButton.icon(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).primaryColor,
+                  Visibility(
+                    visible: selectedEmployees.length == 1 && shops.length > 0,
+                    child: ElevatedButton.icon(
+                      icon: Icon(
+                        Icons.edit,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      label: Text(
+                        'Edit',
+                      ),
+                      onPressed: () {
+                        _editEmployee(context, selectedEmployees[0]);
+                      },
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(30.0),
+                      // ),
+                    ),
                   ),
-                  label: Text(
-                    'Delete',
-                  ),
-                  onPressed: () {
-                    dbService.deleteEmployees(selectedEmployees).then((_) {
-                      setState(() {
-                        selectedEmployees = [];
-                      });
-                    }).catchError((error) {
-                      if (error.toString().contains("NOINTERNET")) {
-                        showSnackbar(context,
-                            "You dont seem to have Internet Connection");
-                      } else {
-                        print(error);
-                        showSnackbar(context,
-                            "Sorry Something occured, Please Try again");
-                      }
-                    });
-                  },
-                  // shape: RoundedRectangleBorder(
-                  //   borderRadius: BorderRadius.circular(30.0),
-                  // ),
-                ),
-              )
+                  Visibility(
+                    visible: selectedEmployees.length > 0,
+                    child: ElevatedButton.icon(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      label: Text(
+                        'Delete',
+                      ),
+                      onPressed: () {
+                        dbService.deleteEmployees(selectedEmployees).then((_) {
+                          setState(() {
+                            selectedEmployees = [];
+                          });
+                        }).catchError((error) {
+                          if (error.toString().contains("NOINTERNET")) {
+                            showSnackbar(context,
+                                "You dont seem to have Internet Connection");
+                          } else {
+                            print(error);
+                            showSnackbar(context,
+                                "Sorry Something occured, Please Try again");
+                          }
+                        });
+                      },
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(30.0),
+                      // ),
+                    ),
+                  )
+                
+              
             ],
           ),
           Expanded(
